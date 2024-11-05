@@ -13,14 +13,7 @@ fetch(API_URL + endpoint)
         localStorage.wines = JSON.stringify(data);
 
         //Afficher le nom des vins dans la liste ul d'id wine-list
-        wineListUL.innerHTML = '';
-        let strListe = '';
-
-        data.forEach(wine => {
-            strListe += '<li class="list-group-item">'+wine.name+'</li>';
-        });
-        
-        wineListUL.innerHTML = strListe;
+        showWines(data);
     });
 
 const frmSearch = document.getElementById('frmSearch');
@@ -35,6 +28,10 @@ frmSearch.addEventListener('submit', function(e) {  console.log('Lancement de la
     console.log(wines);
 
     //Afficher le nom des vins dans la liste ul d'id wine-list
+    showWines(wines);
+});
+
+function showWines(wines) {
     //Vider la liste HTML
     wineListUL.innerHTML = '';
     let strListe = '';
@@ -44,5 +41,4 @@ frmSearch.addEventListener('submit', function(e) {  console.log('Lancement de la
     });
     
     wineListUL.innerHTML = strListe;
-});
-
+}
