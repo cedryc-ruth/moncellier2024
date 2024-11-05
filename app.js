@@ -23,9 +23,26 @@ fetch(API_URL + endpoint)
         wineListUL.innerHTML = strListe;
     });
 
-const btSearch = document.getElementById('frmSearch');
+const frmSearch = document.getElementById('frmSearch');
 
-btSearch.addEventListener('click', function(e) {  
-    console.log('Lancement de la recherche...');
+frmSearch.addEventListener('submit', function(e) {  console.log('Lancement de la recherche...');
+    e.preventDefault();
+
+    let wines = JSON.parse(localStorage.wines);
+    let keyword = this.keyword.value;
+
+    wines = wines.filter(wine => wine.name.search(new RegExp(keyword,'i'))!=-1);
+    console.log(wines);
+
+    //Afficher le nom des vins dans la liste ul d'id wine-list
+    //Vider la liste HTML
+    wineListUL.innerHTML = '';
+    let strListe = '';
+
+    wines.forEach(wine => {
+        strListe += '<li class="list-group-item">'+wine.name+'</li>';
+    });
+    
+    wineListUL.innerHTML = strListe;
 });
 
