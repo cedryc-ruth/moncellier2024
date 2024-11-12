@@ -14,6 +14,35 @@ fetch(API_URL + endpoint)
 
         //Afficher le nom des vins dans la liste ul d'id wine-list
         showWines(data);
+
+        //Générer la liste des années
+        const allYears = [];
+
+        JSON.parse(localStorage.wines).forEach(wine => {
+            if(!allYears.includes(wine.year)) {
+                allYears.push(wine.year);
+            }
+        });
+
+        allYears.forEach(year => {
+            frmFilter.year.innerHTML += '<option>'+year+'</option>';
+        });
+    });
+
+//Générer le formulaire de filtre
+fetch(API_URL + '/api/wines/countries')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        data.forEach(info => {  //console.log(info.country);
+            frmFilter.country.innerHTML += '<option>'+info.country+'</option>';
+        });
+/*
+        for(let info of data) { //console.log(info.country);
+            frmFilter.country.innerHTML += '<option>'+info.country+'</option>';
+        }
+*/
     });
 
 const frmSearch = document.getElementById('frmSearch');
@@ -29,6 +58,28 @@ frmSearch.addEventListener('submit', function(e) {  console.log('Lancement de la
 
     //Afficher le nom des vins dans la liste ul d'id wine-list
     showWines(wines);
+});
+
+const frmFilter = document.getElementById('frmFilter');
+
+frmFilter.addEventListener('submit', (e)=> {    console.log('Lancement du filtre...');
+    e.preventDefault();
+
+    let selectedCountry = frmFilter.country.value;
+    let selectedYear = frmFilter.year.value;
+
+    let wines = JSON.parse(localStorage.wines);
+    let result = wines;
+
+    if(selectedCountry!='') {  //Filtre par pays
+        result = result.filter(wine => wine.country == selectedCountry);
+    }
+
+    if(selectedYear!='') {  //Filtre par année
+        result = result.filter(wine => wine.year == selectedYear);
+    }
+
+    console.log(result);
 });
 
 function showWines(wines) {
