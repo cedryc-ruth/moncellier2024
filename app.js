@@ -98,11 +98,11 @@ function showWines(wines) {
     //Ajouter la gestion du clic
     const allLIWines = document.querySelectorAll('#wine-list > li');
 
-    for(let i=0; i<allLIWines.length ;i++) {
-        allLIWines[i].addEventListener('click', function() {
+    allLIWines.forEach(function(li) {
+        li.addEventListener('click', function() {
             console.log(this);
 
             //TODO Afficher le détail dans la zone de droite
         });
-    }
+    });
 }
