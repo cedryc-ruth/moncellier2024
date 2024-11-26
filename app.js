@@ -45,6 +45,7 @@ fetch(API_URL + '/api/wines/countries')
 */
     });
 
+//Fonctionnalités
 const frmSearch = document.getElementById('frmSearch');
 
 frmSearch.addEventListener('submit', function(e) {  console.log('Lancement de la recherche...');
@@ -82,6 +83,7 @@ frmFilter.addEventListener('submit', (e)=> {    console.log('Lancement du filtre
     console.log(result);
 });
 
+
 function showWines(wines) {
     //Vider la liste HTML
     wineListUL.innerHTML = '';
@@ -92,4 +94,15 @@ function showWines(wines) {
     });
     
     wineListUL.innerHTML = strListe;
+
+    //Ajouter la gestion du clic
+    const allLIWines = document.querySelectorAll('#wine-list > li');
+
+    allLIWines.forEach(function(li) {
+        li.addEventListener('click', function() {
+            console.log(this);
+
+            //TODO Afficher le détail dans la zone de droite
+        });
+    });
 }
