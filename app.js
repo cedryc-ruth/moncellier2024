@@ -90,7 +90,7 @@ function showWines(wines) {
     let strListe = '';
 
     wines.forEach(wine => {
-        strListe += '<li class="list-group-item">'+wine.name+'</li>';
+        strListe += '<li class="list-group-item" data-id="'+wine.id+'">'+wine.name+'</li>';
     });
     
     wineListUL.innerHTML = strListe;
@@ -103,6 +103,28 @@ function showWines(wines) {
             console.log(this);
 
             //TODO Afficher le détail dans la zone de droite
+            const details = document.getElementById('details');
+
+            //Récupérer le vin dont l'id est dans l'attribut data-id du LI
+            let wineId = this.dataset.id;
+
+            //Récupérer toutes les infos de ce vin dans localStorage
+            let wine = JSON.parse(localStorage.wines).filter((wine) => wine.id==wineId);
+
+            wine = wine.length>0 ? wine[0]:undefined;
+
+            if(wine) {
+                //Afficher toutes les infos de ce vin
+                let str = '<strong>'+wineId+'</strong>';
+                str += '<p>Name: '+wine.name+'</p>';
+                str += '<p>Country :'+wine.country+'</p>';
+
+                details.innerHTML = str;
+            } else {
+                details.innerHTML = '<strong>Code de vin inconnu</strong>';
+            }
+
+            
         });
     });
 }
