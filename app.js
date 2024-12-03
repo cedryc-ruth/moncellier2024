@@ -110,7 +110,11 @@ function showWines(wines) {
                 let wine = result[0];
 
                 const wineDetails = document.querySelector('#wine-details');
-                wineDetails.innerHTML = wine.id;
+                const badge = wineDetails.querySelector('#wine-details span.badge');
+                badge.innerHTML = '#'+wine.id;
+
+                const wineName = wineDetails.querySelector('#wine-details span.wine-name');
+                wineName.innerHTML = wine.name;
             }
             //TODO Afficher le détail dans la zone de droite
         });
