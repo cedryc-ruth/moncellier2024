@@ -115,6 +115,60 @@ function showWines(wines) {
 
                 const wineName = wineDetails.querySelector('#wine-details span.wine-name');
                 wineName.innerHTML = wine.name;
+
+                const wineCountry = wineDetails.querySelector('span.wine-country');
+                wineCountry.innerHTML = wine.country;
+
+                const wineRegion = wineDetails.querySelector('span.wine-region');
+                wineRegion.innerHTML = wine.region;
+
+                const wineYear = wineDetails.querySelector('span.wine-year');
+                wineYear.innerHTML = wine.year;
+
+                const wineCapacity = wineDetails.querySelector('span.wine-capacity');
+                wineCapacity.innerHTML = Math.floor(wine.capacity) + ' cl';
+
+                const wineColor = wineDetails.querySelector('span.wine-color');
+                let couleur;
+                
+                switch(wine.color) {
+                    case 'red': couleur = 'Rouge'; break;
+                    case 'white': couleur = 'Blanc'; break;
+                    case 'pink': couleur = 'Rosé'; break;
+                }
+
+                wineColor.innerHTML = couleur;
+
+                const winePrice = wineDetails.querySelector('span.wine-price');
+                winePrice.innerHTML = String(wine.price).replace('.',',') + ' €';
+
+                const countryCodes = {
+                    /*
+                    'Argentina':{
+                        '2D':'AR',
+                        '3D':'ARG',
+                        'fr':'Argentine',
+                    },
+                    */
+                    'Argentina':'AR',
+                    'Austria':'AT',
+                    'Belgium':'BE',
+                    'France':'FR',
+                    'Germany':'DE',
+                    'Hungary':'HU',
+                    'Italy':'IT',
+                    'Portugal':'PT',
+                    'Spain':'ES',
+                    'USA':'US',
+                };
+
+                let countryCode = countryCodes[wine.country];
+
+                const imgCountryflag = wineDetails.querySelector('span.country-flag img');
+                imgCountryflag.src = 'https://flagsapi.com/'+countryCode+'/flat/64.png';
+
+                const wineDescription = document.querySelector('#description');
+                wineDescription.innerHTML = wine.description;
             }
             //TODO Afficher le détail dans la zone de droite
         });

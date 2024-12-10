@@ -77,7 +77,14 @@
                                 <div class="card-body">
                                   <h5 class="card-title"><span class="badge text-bg-secondary">#15</span> <span class="wine-name">Beaujolais</span></h5>
                                   <p class="card-text"><span class="wine-info">Grapes :</span> <span class="wine-grapes">Pinot noir</span></p>
-                                  <p class="card-text"><span class="wine-info">Country :</span> <span class="wine-country">France</span></p>
+                                  <p class="card-text"><span class="wine-info">Country :</span> 
+                                    <span class="wine-country">France</span> <span class="country-flag"><img src="https://flagsapi.com/BE/flat/64.png"></span>
+                                  </p>
+                                  <p class="card-text"><span class="wine-info">Region :</span> <span class="wine-region">Bordeaux</span></p>
+                                  <p class="card-text"><span class="wine-info">Year :</span> <span class="wine-year">2000</span></p>
+                                  <p class="card-text"><span class="wine-info">Capacity :</span> <span class="wine-capacity">75 cl</span></p>
+                                  <p class="card-text"><span class="wine-info">Color :</span> <span class="wine-color">Rouge</span></p>
+                                  <p class="card-text"><span class="wine-info">Price :</span> <span class="wine-price">20 €</span></p>
 
                                   <button type="button" class="btn btn-light"><i class="bi bi-camera"></i> Add a picture (1/3)</button>
                                   <button type="button" class="btn btn-light"><i class="bi bi-pencil"></i> Add a note</button>
@@ -96,16 +103,22 @@
                 </div>
                 <div class="row">
                     <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="#">Description</a>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="home" aria-selected="true">Description</button>
                         </li>
-                        <li class="nav-item">
-                          <a class="nav-link" href="#">Commentaires</a>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments" type="button" role="tab" aria-controls="profile" aria-selected="false">Commentaires</button>
+
                         </li>
-                        <li class="nav-item">
-                          <a class="nav-link" href="#">Notes personnelles</a>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab" aria-controls="contact" aria-selected="false">Notes personnelles</button>
                         </li>
                     </ul>
+                    <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">...DESC</div>
+                      <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">...COMM</div>
+                      <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">...NOTES</div>
+                    </div>
                 </div>
             </div>
         </div>
