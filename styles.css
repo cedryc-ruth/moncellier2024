@@ -19,3 +19,7 @@
 
   /* DEBUG bordure des trames
   div { border:1px solid black; } */
+
+  #wine-comments {
+    margin-top : 5px;
+  }
