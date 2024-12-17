@@ -182,8 +182,24 @@ function showWines(wines) {
 
                 const wineDescription = document.querySelector('#description');
                 wineDescription.innerHTML = wine.description;
+
+                //Activer l'onglet "Description" pour éviter d'afficher les commentaires ou notes perso du précédent vin
+                const descriptionTab = document.querySelector('#description-tab');
+                descriptionTab.click();
+
+                //Effacer les commentaires du précédent vin
+                const pCommentsInfosSpan = document.querySelector('#comments #comments-infos span');
+                pCommentsInfosSpan.innerHTML = '';
+                const ulWineComments = document.querySelector('#comments #wine-comments');
+                ulWineComments.innerHTML = '';
+
+                //Afficher l'animation de chargement des commentaires
+                document.querySelector('#comments > video').hidden = false;
+
+                //Effacer les notes personnelles du précédent vin
+                const divNotes = document.querySelector('#notes');
+                divNotes.innerHTML = '';
             }
-            //TODO Afficher le détail dans la zone de droite
         });
     });
 }
@@ -193,6 +209,10 @@ const commentsTab = document.getElementById('comments-tab');
 
 commentsTab.addEventListener('click', function(e) {  console.log('Affichage des commentaires...');
     //TODO améliorer le gestionnaire d'événements en choisissant un event lié à l'affichage du panel (classes CSS 'active show')
+
+    //Réinitialiser la liste (effacer les commentaires déjà afichés)
+    const wineComments = document.getElementById('wine-comments');
+    wineComments.innerHTML = '';
 
     //Récupérer les commentaires du vin sélectionné
         //Récupérer l'id du vin sélectionné
@@ -206,8 +226,12 @@ commentsTab.addEventListener('click', function(e) {  console.log('Affichage des 
         //Sauvegarder localement
         localStorage.setItem('comments', JSON.stringify(data));
 
+        //Cacher l'animation de chargement
+        document.querySelector('#comments > video').hidden = true;
+
         //Afficher les commentaires
-        const wineComments = document.getElementById('wine-comments');
+        const commentsInfosSpan = document.querySelector('#comments-infos span');
+        commentsInfosSpan.innerHTML = data.length + (data.length>1?' commentaires.':' commentaire.');
 
         data.forEach(comment => {
             //Récupérer le login du user qui a commenté sur base de son user_id
