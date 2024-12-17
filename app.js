@@ -45,6 +45,16 @@ fetch(API_URL + '/api/wines/countries')
 */
     });
 
+//Sauvegarder la liste des users (avec leur id) pour l'affichage de leurs commentaires
+endpoint = '/api/users';
+
+fetch(API_URL + endpoint)
+.then(response => response.json())
+.then(data => { //console.log(data);
+    localStorage.setItem('users', JSON.stringify(data));
+});
+
+
 //Fonctionnalités
 const frmSearch = document.getElementById('frmSearch');
 
@@ -108,6 +118,9 @@ function showWines(wines) {
 
             if(result.length>0) {
                 let wine = result[0];
+
+                //Sauver le vin sélectionné pour les besoins ultérieurs (commentaires, notes perso...)
+                localStorage.setItem('wine',JSON.stringify(wine));
 
                 const wineDetails = document.querySelector('#wine-details');
                 const badge = wineDetails.querySelector('#wine-details span.badge');
@@ -174,3 +187,49 @@ function showWines(wines) {
         });
     });
 }
+
+//Récupération et affichage des commentaires
+const commentsTab = document.getElementById('comments-tab');
+
+commentsTab.addEventListener('click', function(e) {  console.log('Affichage des commentaires...');
+    //TODO améliorer le gestionnaire d'événements en choisissant un event lié à l'affichage du panel (classes CSS 'active show')
+
+    //Récupérer les commentaires du vin sélectionné
+        //Récupérer l'id du vin sélectionné
+    let wine = JSON.parse(localStorage.wine);       //console.log('vin sélectionné: ',wine);
+
+    endpoint = '/api/wines/'+wine.id+'/comments';
+
+    fetch(API_URL + endpoint)
+    .then(response => response.json())
+    .then(data => { //console.log(data);
+        //Sauvegarder localement
+        localStorage.setItem('comments', JSON.stringify(data));
+
+        //Afficher les commentaires
+        const wineComments = document.getElementById('wine-comments');
+
+        data.forEach(comment => {
+            //Récupérer le login du user qui a commenté sur base de son user_id
+            const users = JSON.parse(localStorage.users);
+
+            let result = users.filter(user => user.id === comment.user_id);
+            let user = result[0];
+
+            //Affichage
+            let li = document.createElement('li');
+            li.classList.add('list-group-item');
+
+            let p = document.createElement('p');
+            p.innerHTML = '<strong class="comment-author">'+user.login+'</strong>'
+
+            let div = document.createElement('div');
+            div.innerHTML = comment.content;
+
+            li.appendChild(p);
+            li.appendChild(div);
+
+            wineComments.appendChild(li);
+        });
+    });
+});
