@@ -3,6 +3,15 @@ let endpoint = '/api/wines';
 
 const wineListUL = document.getElementById('wine-list');
 
+//Mock de la connexion
+sessionStorage.user = JSON.stringify({
+    id: 2,
+    login: 'bob',
+    credentials: btoa('bob:123'),
+});
+
+const user = JSON.parse(sessionStorage.user);
+
 console.log('ok');
 //Récupérer tous les vins sur l'api Rest
 
@@ -93,6 +102,44 @@ frmFilter.addEventListener('submit', (e)=> {    console.log('Lancement du filtre
     console.log(result);
 });
 
+const btLikeWine = document.getElementById('btLikeWine');
+
+btLikeWine.addEventListener('click', function(e) {  //console.log('Like/dislike');
+    //Envoyer une requête PUT de modification du like de ce vin par l'utilisateur actif
+    const wine = JSON.parse(localStorage.wine);    
+
+    const options = {
+        'method': 'PUT',
+        'body': JSON.stringify({ "like" : !wine.liked }),	//Try with true or false
+        'mode': 'cors',
+        'headers': {
+            'content-type': 'application/json; charset=utf-8',
+            'Authorization': 'Basic '+user.credentials	//Try with other credentials (login:password)
+        }
+    };
+
+    endpoint = '/api/wines/'+wine.id+'/like';
+
+    fetch(API_URL + endpoint, options)
+    .then(response => response.json())
+    .then(data => { console.log(data);
+        if(data.success) {
+            if(!wine.liked) {  //Ce vin n'est pas encore liké
+                document.querySelector('#btLikeWine i').classList.replace('bi-heart','bi-heart-fill');
+                document.querySelector('#btLikeWine i').style.color = '#dc3545';
+                wine.liked = true;
+            } else {    //Ce vin est déjà liké
+                document.querySelector('#btLikeWine i').classList.replace('bi-heart-fill','bi-heart');
+                document.querySelector('#btLikeWine i').style.color = 'black';
+                wine.liked = false;
+            }
+
+            localStorage.wine = JSON.stringify(wine);
+        } else {
+            alert(data);
+        }
+    });
+});
 
 function showWines(wines) {
     //Vider la liste HTML
@@ -112,6 +159,9 @@ function showWines(wines) {
         li.addEventListener('click', function() {
             console.log(this);
             console.log(this.dataset.id);
+
+            //Effacer le nombre total de likes du vin sélectionné (avant de l'actualiser plus bas)
+            document.querySelector('.total-likes').innerHTML = '';
 
             //Rechercher dans localStorage le vin sélectionné
             let result = JSON.parse(localStorage.wines).filter( wine => wine.id==this.dataset.id );
@@ -199,6 +249,38 @@ function showWines(wines) {
                 //Effacer les notes personnelles du précédent vin
                 const divNotes = document.querySelector('#notes');
                 divNotes.innerHTML = '';
+
+                //=== Envoyer une requête pour récupérer le nombre de likes du vin sélectionné ===
+                endpoint = '/api/wines/'+wine.id+'/likes-count';
+
+                fetch(API_URL + endpoint)
+                .then(response => response.json())
+                .then(data => { //console.log(data);
+                    //Afficher le nombre total de likes du vin sélectionné
+                    document.querySelector('.total-likes').innerHTML = data.total;
+                });
+                
+                //=== Afficher si le vin est liké par l'utilisateur actif ===
+                endpoint = '/api/users/'+user.id+'/likes/wines';
+
+                fetch(API_URL + endpoint)
+                .then(response => response.json())
+                .then(data => { //console.log(data);
+                    //Filtrer la liste des vins déjà liké par l'utilisateur par rapport au vin sélectionné
+                    const result = data.filter(likedWine => likedWine.id==wine.id);
+
+                    if(result.length!=0) {  //Ce vin est déjà liké
+                        document.querySelector('#btLikeWine i').classList.replace('bi-heart','bi-heart-fill');
+                        document.querySelector('#btLikeWine i').style.color = '#dc3545';
+                        wine.liked = true;
+                    } else {    //Ce vin n'est pas encore liké
+                        document.querySelector('#btLikeWine i').classList.replace('bi-heart-fill','bi-heart');
+                        document.querySelector('#btLikeWine i').style.color = 'black';
+                        wine.liked = false;
+                    }
+
+                    localStorage.wine = JSON.stringify(wine);
+                });
             }
         });
     });
