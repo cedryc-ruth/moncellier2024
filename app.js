@@ -2,6 +2,7 @@ const API_URL = 'https://cruth.phpnet.org/epfc/caviste/public/index.php';
 let endpoint = '/api/wines';
 
 const wineListUL = document.getElementById('wine-list');
+let wine;   //Vin sélectionné
 
 //Mock de la connexion
 sessionStorage.user = JSON.stringify({
@@ -167,7 +168,7 @@ function showWines(wines) {
             let result = JSON.parse(localStorage.wines).filter( wine => wine.id==this.dataset.id );
 
             if(result.length>0) {
-                let wine = result[0];
+                wine = result[0];
 
                 //Sauver le vin sélectionné pour les besoins ultérieurs (commentaires, notes perso...)
                 localStorage.setItem('wine',JSON.stringify(wine));
@@ -286,6 +287,7 @@ function showWines(wines) {
     });
 }
 
+//=== Gestion des commentaires ===
 //Récupération et affichage des commentaires
 const commentsTab = document.getElementById('comments-tab');
 
@@ -338,4 +340,69 @@ commentsTab.addEventListener('click', function(e) {  console.log('Affichage des 
             wineComments.appendChild(li);
         });
     });
+});
+
+//Ajout d'un commentaire
+const frmAddComments = document.querySelector('form#frmAddComments');
+
+frmAddComments.addEventListener('submit',function (e){
+    e.preventDefault();
+
+    console.log(this);
+    let content = this.comment.value.trim();
+
+    if(content.length>0) {
+        const options = {
+            'method': 'POST',
+            'body': JSON.stringify({"content":content}),
+            'mode': 'cors',
+            'headers': {
+                'content-type': 'application/json; charset=utf-8',
+                'Authorization': 'Basic '+user.credentials	//Try with other credentials (login:password)
+            }
+        };
+        
+        const fetchURL = '/api/wines/'+wine.id+'/comments';
+        
+        fetch(API_URL + fetchURL, options).then(function(response) {
+            if(response.ok) {
+                response.json().then(function(data){
+                    console.log(data);
+
+                    //Affichage du nouveau commentaire
+                    const wineComments = document.getElementById('wine-comments');
+
+                    let li = document.createElement('li');
+                    li.classList.add('list-group-item');
+
+                    let p = document.createElement('p');
+                    p.innerHTML = '<strong class="comment-author">'+user.login+'</strong>'
+
+                    let div = document.createElement('div');
+                    div.innerHTML = content;
+
+                    li.appendChild(p);
+                    li.appendChild(div);
+
+                    wineComments.appendChild(li);
+
+                    //Sauvegarde locale du nouveau commentaire (ajout aux autres commentaires)
+                    let comments = JSON.parse(localStorage.comments);
+                    let newComment = {"id":data.id,"user_id":user.id,"wine_id":wine.id,"content":content};
+                    comments.push(newComment);
+
+                    localStorage.comments = JSON.stringify(comments);
+
+                    //Vider le formulaire
+                    frmAddComments.comment.value = '';
+
+                    //Actualiser le total des commentaires
+                    const commentsInfosSpan = document.querySelector('#comments-infos span');
+                    commentsInfosSpan.innerHTML = comments.length + (comments.length>1?' commentaires.':' commentaire.');
+                });
+            }
+        });
+    } else {
+        alert('Vide!');
+    }
 });
